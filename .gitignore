@@ -47,3 +47,27 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# RStudio files
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.Rapp.history
+
+# Mac system files
+.DS_Store
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+  "id": 4001,
+  "name": "Single Room",
+  "area": 35.0,
+  "cubeHeight": 3.5,
+  "heating": 1000.0,
+  "lighting": 500.0
+}
