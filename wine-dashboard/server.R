@@ -1,6 +1,9 @@
 library(shiny)
 library(plotly)
 library(dplyr)
+library(bslib)
+library(fontawesome)
+library(flexdashboard)
 
 function(input, output, session) {
   wine_data <- read.csv("data/XWines_Full_100K_wines.csv") |>
@@ -55,4 +58,39 @@ function(input, output, session) {
     
     data
     })
+  
+  wine_count <- reactive({
+    nrow(filtered_data())
+  })
+  
+
+  output$wine_count_box <- renderUI({
+    value_box(
+      title = "Total Wines",
+      value = format(wine_count(), big.mark = ","),
+      showcase = if (wine_count() > 50000 ) icon("wine-glass") else icon("wine-glass-empty"),
+      showcase_layout = "left center",
+      theme = if (wine_count() > 50000) "success" else "warning"
+    )
+  })
+  
+  max_abv <- {max(wine_data$ABV)}
+  mean_abv <- reactive({mean(filtered_data()$ABV)})
+  
+  
+  output$ABV_gauge <- renderGauge({
+    gauge(
+      value = mean_abv(), 
+      min = 0, 
+      max = max_abv, 
+      symbol = '%',
+      sectors = gaugeSectors(
+        danger = c(0.8 * max_abv, max_abv), 
+        warning = c(0.3 * max_abv, 0.6 * max_abv), 
+        success  = c(0, 0.3 * max_abv)
+      )
+    )
+  })
+  
+  
 }

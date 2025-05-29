@@ -10,6 +10,7 @@
 library(shiny)
 library(plotly)
 library(bslib)
+library(fontawesome)
 
 page_fillable(
   theme = bs_theme(bootswatch = "flatly"),
@@ -21,33 +22,36 @@ page_fillable(
         choices = NULL
       )
     ),
-    navset_tab( 
+    navset_tab(
+      nav_panel("About",
+                card(
+                  h2("About page")
+                )),
       nav_panel("Map & table", (
         layout_column_wrap(
           width = 1,
           card(
-            plotlyOutput("map_plot", height = "100%"),
+            plotlyOutput("map_plot", height = "100%")
           ),
 
           card(
             dataTableOutput("wine_table")
           )
         )
-        
       )), 
-      nav_panel("B", "Page B content"), 
-      nav_panel("C", "Page C content"), 
-      nav_menu( 
-        "Other links", 
-        nav_panel("D", "Panel D content"), 
-        "----", 
-        "Description:", 
-        nav_item( 
-          a("Shiny", href = "https://shiny.posit.co", target = "_blank") 
-        ), 
-      ), 
-    ),
-
-
+      nav_panel("ABV", layout_columns(
+          card(),
+          card(
+            card(uiOutput("wine_count_box")),
+            card(
+              "Average ABV",
+              gaugeOutput("ABV_gauge")
+            ),
+            card()
+          ),
+        col_widths = c(8,4)
+      )), 
+      nav_panel("C", "Page C content") 
+    )
   )
 )
