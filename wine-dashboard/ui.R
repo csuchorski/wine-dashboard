@@ -8,17 +8,46 @@
 #
 
 library(shiny)
+library(plotly)
 library(bslib)
 
-# Define UI for application that draws a histogram
-page_fluid(
+page_fillable(
+  theme = bs_theme(bootswatch = "flatly"),
   page_sidebar(
-  title = "Wine dashboard",
-  sidebar = sidebar(
-    checkboxGroupInput("checkGroupTypes", label = h3("Checkbox group"), 
-                       choices = NULL
-                       ),
-  ),
-  plotlyOutput("map_plot")
-)
+    sidebar = sidebar(
+      checkboxGroupInput(
+        inputId = "checkGroupTypes",
+        label = h3("Wine Types"),
+        choices = NULL
+      )
+    ),
+    navset_tab( 
+      nav_panel("Map & table", (
+        layout_column_wrap(
+          width = 1,
+          card(
+            plotlyOutput("map_plot", height = "100%"),
+          ),
+
+          card(
+            dataTableOutput("wine_table")
+          )
+        )
+        
+      )), 
+      nav_panel("B", "Page B content"), 
+      nav_panel("C", "Page C content"), 
+      nav_menu( 
+        "Other links", 
+        nav_panel("D", "Panel D content"), 
+        "----", 
+        "Description:", 
+        nav_item( 
+          a("Shiny", href = "https://shiny.posit.co", target = "_blank") 
+        ), 
+      ), 
+    ),
+
+
+  )
 )
