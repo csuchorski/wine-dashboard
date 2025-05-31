@@ -67,7 +67,20 @@ page_fillable(
           )
         )
         
+),
+nav_panel("Exploration",
+          layout_columns(
+            card(uiOutput("wine_count_box")),
+            card(plotlyOutput("summary_hist_abv")),
+            card(plotlyOutput("summary_violin_type")),
+            card(plotlyOutput("summary_heatmap_body_acidity")),
+            card(plotlyOutput("summary_bar_grapes")),
+            card(plotlyOutput("summary_bar_country")),
+            col_widths = c(6,6)
+          )
 )
 )
+
+
 )
 )
