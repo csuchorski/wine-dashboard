@@ -16,6 +16,15 @@ page_fillable(
   theme = bs_theme(bootswatch = "flatly"),
   page_sidebar(
     sidebar = sidebar(
+      tags$div(
+        style = "text-align:center; margin-bottom: 20px;",
+        img(src = "logo.jpg", height = "80px")
+      ),
+      checkboxGroupInput(
+        inputId = "checkGroupTypes",
+        label = h3("Wine Types"),
+        choices = NULL
+      ),
       checkboxGroupInput(
         inputId = "checkGroupTypes",
         label = h3("Wine Types"),
@@ -25,8 +34,68 @@ page_fillable(
     navset_tab(
       nav_panel("About",
                 card(
-                  h2("About page")
-                )),
+                  tags$div(
+                    style = "text-align:center; margin-bottom: 20px;",
+                    img(src = "logo.jpg", height = "80px")
+                  ),
+                  
+                  tags$h2(style = "text-align:center; color:#2C3E50; margin-bottom: 10px;", "Wine Explorer"),
+                  
+                  tags$p(
+                    style = "font-size: 18px; text-align: center;",
+                    "Wine Explorer is an interactive Shiny app designed to help you discover, analyze, and compare wines from around the world."
+                  ),
+                  
+                  tags$hr(),
+                  
+                  tags$h4("Key Features"),
+                  tags$ul(
+                    tags$li("Interactive map of average ABV by country"),
+                    tags$li("Filter wines by type, price, ABV, and rating"),
+                    tags$li("Explore detailed wine data in tables and charts"),
+                    tags$li("Find the perfect wine for you using customizable sliders"),
+                  ),
+                  
+                  tags$hr(),
+                  
+                  tags$h4("Data Sources"),
+                  tags$p(
+                    "The data used in this app comes from the ",
+                    tags$a(href = "link", "text"),
+                  ),
+                  
+                  tags$hr(),
+                  
+                  tags$h4("How to Use"),
+                  tags$ol(
+                    tags$li("Select wine types in the sidebar to filter the dataset."),
+                    tags$li("Navigate between tabs to explore maps, tables, and visualizations."),
+                    tags$li("Use sliders in the 'Find perfect wine for you' tab to tailor recommendations."),
+                    tags$li("Click on countries in the map to focus on wines from that region.")
+                  ),
+                  
+                  tags$hr(),
+                  
+                  tags$h4("Credits & Contact"),
+                  tags$p("Created by:"),
+                  tags$ul(
+                    tags$li(
+                      "Cezary Suchorski 123456",
+                    ),
+                    tags$li(
+                      "Michał Żarnowski 160277",
+                    )
+                  ),
+                  
+                  tags$hr(),
+                  
+                  tags$p(
+                    style = "font-size: 12px; color: #888;",
+                    "This app was built with R, Shiny, and Plotly. Last updated: May 2025."
+                  )
+                )
+      )
+      ,
       nav_panel("Map & table", (
         layout_column_wrap(
           width = 1,
