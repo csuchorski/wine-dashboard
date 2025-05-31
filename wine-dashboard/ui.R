@@ -45,13 +45,29 @@ page_fillable(
             card(uiOutput("wine_count_box")),
             card(
               "Average ABV",
-              gaugeOutput("ABV_gauge")
+              flexdashboard::gaugeOutput("ABV_gauge")
             ),
             card()
           ),
         col_widths = c(8,4)
       )), 
-      nav_panel("C", "Page C content") 
-    )
-  )
+      nav_panel("C", "Page C content"),
+      nav_panel("Find perfect wine for you",
+        card(
+          sliderInput("Price", "Price range", min = 0, max = 100, value = c(10, 50)),
+          sliderInput("ABV", "ABV range", min = 0, max = 20, value = c(10, 15)),
+          sliderInput("Rating", "Rating range", min = 0, max = 5, value = c(3, 5))
+        ),
+        layout_columns(
+          card(
+            plotlyOutput("wine_recommendation_plot")
+          ),
+          card(
+            DT::DTOutput("wine_recommendation_table")
+          )
+        )
+        
+)
+)
+)
 )
