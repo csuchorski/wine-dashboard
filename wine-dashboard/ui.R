@@ -25,11 +25,6 @@ page_fillable(
         label = h3("Wine Types"),
         choices = NULL
       ),
-      checkboxGroupInput(
-        inputId = "checkGroupTypes",
-        label = h3("Wine Types"),
-        choices = NULL
-      )
     ),
     navset_tab(
       nav_panel("About",
@@ -147,7 +142,12 @@ nav_panel("Exploration",
             card(plotlyOutput("summary_bar_country")),
             col_widths = c(6,6)
           )
+),
+nav_panel("Some more...",
+          card(plotlyOutput("pairing_heatmap", height = "900px"))
 )
+
+
 )
 
 

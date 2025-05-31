@@ -8,6 +8,7 @@ library(ggplot2)
 library(dplyr)
 library(viridis)
 library(arrow)
+library(tidyr)
 
 function(input, output, session) {
   wine_data <- read_parquet("data/wine_data.parquet") |>
@@ -19,6 +20,12 @@ function(input, output, session) {
     inputId = "checkGroupTypes",
     choices = wine_types,
     selected = wine_types
+  )
+  updateSelectInput(
+    session,
+    inputId = "countryInput",
+    choices = sort(unique(wine_data$Country)),
+    selected = unique(wine_data$Country)
   )
   
   filtered_data <- reactive({
@@ -218,6 +225,100 @@ function(input, output, session) {
       )
   })
   
+  output$pairing_heatmap <- renderPlotly({
+    req(filtered_data())
+    df <- filtered_data()
+    
+    # 1. Expand and clean
+    expanded <- df %>%
+      tidyr::separate_rows(Harmonize, sep = ",") %>%
+      mutate(
+        Harmonize = gsub("\\[|\\]|'", "", Harmonize),
+        Harmonize = trimws(Harmonize)
+      )
+    
+    # 2. Count pairings
+    counts <- expanded %>%
+      count(Type, Harmonize, name = "n")
+    
+    # 3. Pick top 15 foods overall
+    top_foods <- expanded %>%
+      count(Harmonize, sort = TRUE) %>%
+      slice_head(n = 15) %>%
+      pull(Harmonize)
+    
+    counts <- counts %>%
+      filter(Harmonize %in% top_foods)
+    
+    # 4. Order factors by total
+    type_order <- counts %>%
+      group_by(Type) %>%
+      summarise(total = sum(n), .groups = "drop") %>%
+      arrange(desc(total)) %>%
+      pull(Type)
+    
+    food_order <- counts %>%
+      group_by(Harmonize) %>%
+      summarise(total = sum(n), .groups = "drop") %>%
+      arrange(desc(total)) %>%
+      pull(Harmonize)
+    
+    counts <- counts %>%
+      mutate(
+        Type      = factor(Type,      levels = type_order),
+        Harmonize = factor(Harmonize, levels = food_order)
+      )
+    
+    max_count <- max(counts$n)
+    
+    # 5. Plotly heatmap with annotations & refined blues palette
+    plot_ly(
+      data       = counts,
+      x          = ~Type,
+      y          = ~Harmonize,
+      z          = ~n,
+      type       = "heatmap",
+      colorscale = list(
+        list(0.00, "#deebf7"),
+        list(0.50, "#9ecae1"),
+        list(1.00, "#3182bd")
+      ),
+      zmin       = 0,
+      zmax       = max_count,
+      showscale  = TRUE,
+      
+      # cell labels
+      text        = ~n,
+      texttemplate= "%{text}",
+      textfont    = list(color = "white", size = 12),
+      
+      # colorbar tweaks
+      colorbar = list(
+        title    = "Count",
+        tickmode = "array",
+        tickvals = c(0, round(max_count/2), max_count),
+        ticktext = c("0", as.character(round(max_count/2)), as.character(max_count)),
+        len      = 0.6,
+        y        = 0.75
+      )
+    ) %>%
+      layout(
+        title = list(text = "Top 15 Wine Types & Food Pairings", x = 0.5),
+        xaxis = list(
+          title      = "Wine Type",
+          tickangle  = -45,
+          tickfont   = list(size = 12),
+          automargin = TRUE
+        ),
+        yaxis = list(
+          title      = "Food Pairing",
+          tickfont   = list(size = 12),
+          automargin = TRUE
+        ),
+        margin = list(l = 150, b = 150, t = 100, r = 50),
+        font   = list(family = "Arial, sans-serif", size = 14, color = "#2C3E50")
+      )
+  })
   
   
 }
