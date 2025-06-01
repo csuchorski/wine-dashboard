@@ -85,26 +85,6 @@ function(input, output, session) {
     )
   })
   
-  max_abv <- {max(wine_data$ABV)}
-  mean_abv <- reactive({mean(filtered_data()$ABV)})
-  
-  
-  output$ABV_gauge <- renderGauge({
-    gauge(
-      value = mean_abv(), 
-      min = 0, 
-      max = max_abv, 
-      symbol = '%',
-      sectors = gaugeSectors(
-        danger = c(0.8 * max_abv, max_abv), 
-        warning = c(0.3 * max_abv, 0.6 * max_abv), 
-        success  = c(0, 0.3 * max_abv)
-      )
-    )
-  })
-  
-  
-  
   output$summary_hist_abv <- renderPlotly({
     plot_ly(
       data = filtered_data(),
