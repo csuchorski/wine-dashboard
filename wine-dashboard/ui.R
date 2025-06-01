@@ -12,8 +12,15 @@ library(plotly)
 library(bslib)
 library(fontawesome)
 
+
+red_light_theme <- bs_theme(
+  bootswatch = "flatly",
+  primary = "#d7263d",
+  danger = "#ff0000"
+)
+
 page_fillable(
-  theme = bs_theme(bootswatch = "flatly"),
+  theme = red_light_theme,
   page_sidebar(
     sidebar = sidebar(
       tags$div(
@@ -24,7 +31,7 @@ page_fillable(
         inputId = "checkGroupTypes",
         label = h3("Wine Types"),
         choices = NULL
-      ),
+      )
     ),
     navset_tab(
       nav_panel("About",
@@ -45,10 +52,10 @@ page_fillable(
                   
                   tags$h4("Key Features"),
                   tags$ul(
-                    tags$li("Interactive map of average ABV by country"),
-                    tags$li("Filter wines by type, price, ABV, and rating"),
+                    tags$li("Interactive map showing wine count by country"),
+                    tags$li("Filter wines by type"),
                     tags$li("Explore detailed wine data in tables and charts"),
-                    tags$li("Find the perfect wine for you using customizable sliders"),
+                    tags$li("Find the perfect wine for you"),
                   ),
                   
                   tags$hr(),
@@ -56,7 +63,7 @@ page_fillable(
                   tags$h4("Data Sources"),
                   tags$p(
                     "The data used in this app comes from the ",
-                    tags$a(href = "link", "text"),
+                    tags$a(href = "https://github.com/rogerioxavier/X-Wines", "text"),
                   ),
                   
                   tags$hr(),
@@ -65,7 +72,6 @@ page_fillable(
                   tags$ol(
                     tags$li("Select wine types in the sidebar to filter the dataset."),
                     tags$li("Navigate between tabs to explore maps, tables, and visualizations."),
-                    tags$li("Use sliders in the 'Find perfect wine for you' tab to tailor recommendations."),
                     tags$li("Click on countries in the map to focus on wines from that region.")
                   ),
                   
@@ -95,61 +101,30 @@ page_fillable(
         layout_column_wrap(
           width = 1,
           card(
-            plotlyOutput("map_plot", height = "100%")
+            plotlyOutput("map_plot"),
+            max_height = "520px"
           ),
 
           card(
-            dataTableOutput("wine_table")
+            dataTableOutput("wine_table"),
+            max_height = "520px"
           )
         )
-      )), 
-      nav_panel("ABV", layout_columns(
-          card(),
-          card(
-            card(uiOutput("wine_count_box")),
-            card(
-              "Average ABV",
-              flexdashboard::gaugeOutput("ABV_gauge")
-            ),
-            card()
-          ),
-        col_widths = c(8,4)
-      )), 
-      nav_panel("C", "Page C content"),
-      nav_panel("Find perfect wine for you",
-        card(
-          sliderInput("Price", "Price range", min = 0, max = 100, value = c(10, 50)),
-          sliderInput("ABV", "ABV range", min = 0, max = 20, value = c(10, 15)),
-          sliderInput("Rating", "Rating range", min = 0, max = 5, value = c(3, 5))
-        ),
-        layout_columns(
-          card(
-            plotlyOutput("wine_recommendation_plot")
-          ),
-          card(
-            DT::DTOutput("wine_recommendation_table")
-          )
-        )
-        
-),
-nav_panel("Exploration",
-          layout_columns(
-            card(uiOutput("wine_count_box")),
-            card(plotlyOutput("summary_hist_abv")),
-            card(plotlyOutput("summary_violin_type")),
-            card(plotlyOutput("summary_heatmap_body_acidity")),
-            card(plotlyOutput("summary_bar_grapes")),
-            card(plotlyOutput("summary_bar_country")),
-            col_widths = c(6,6)
-          )
-),
-nav_panel("Some more...",
-          card(plotlyOutput("pairing_heatmap", height = "900px"))
-)
-
-
-)
-
-
-)
+      )),
+      nav_panel("Exploration",
+                layout_columns(
+                  card(uiOutput("wine_count_box")),
+                  card(plotlyOutput("summary_hist_abv")),
+                  card(plotlyOutput("summary_violin_type")),
+                  card(plotlyOutput("summary_heatmap_body_acidity")),
+                  card(plotlyOutput("summary_bar_grapes")),
+                  card(plotlyOutput("summary_bar_country")),
+                  col_widths = c(6,6)
+                )
+      ),
+      nav_panel("Some more...",
+                card(plotlyOutput("pairing_heatmap", height = "900px"))
+      )
+      )
+    )
 )

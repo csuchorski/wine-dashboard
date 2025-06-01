@@ -45,18 +45,18 @@ function(input, output, session) {
   output$map_plot <- renderPlotly({
     df <- filtered_data() |>
       group_by(Country) |>
-      summarise(avg_ABV = mean(ABV, na.rm = TRUE))
+      summarise(wine_count = n())
     
     plot_geo(df, source="map") |>
       add_trace(
         locations = ~Country,
         locationmode = 'country names',
-        z = ~avg_ABV,
-        text = ~Country,
+        z = ~wine_count,
+        text = ~paste0(Country, ": ", wine_count, " wines"),
         key = ~Country,
         colors = "Reds"
       ) |>
-      layout(title = "Average Wine ABV by Country")
+      layout(title = "Wine Count by Country")
   })
   
   output$wine_table <- renderDataTable({
